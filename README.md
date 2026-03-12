@@ -12,6 +12,9 @@ Skill path:
 No manual config editing is required for first-time setup.  
 The user only needs to send an API Key to the Agent, and the Agent completes initialization automatically:
 
+You can start with a natural-language instruction:
+- "Help me initialize 1keeper config"
+
 1. User sends API Key to Agent.
 2. Agent resolves primary wallets via API Key:
 - Solana primary wallet (`chain_id=501`)

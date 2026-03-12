@@ -12,6 +12,9 @@ Skill 路径：
 首次使用时，不需要手动改配置文件。  
 只需要把 API Key 发送给 Agent，Agent 会自动完成初始化：
 
+可直接先发送自然语言指令：
+- “帮我初始化1keeper配置”
+
 1. 用户发送 API Key 给 Agent。
 2. Agent 通过 API Key 获取：
 - Solana 主钱包（`chain_id=501`）
