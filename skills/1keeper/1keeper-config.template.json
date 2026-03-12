@@ -1,0 +1,12 @@
+{
+  "apiKey": "YOUR_API_KEY_HERE",
+  "baseUrl": "https://api1.1keeper.com",
+  "chainId": 501,
+  "wallets": {
+    "solanaPrimaryWalletAddress": "YOUR_SOLANA_PRIMARY_WALLET_ADDRESS",
+    "bnbPrimaryWalletAddress": "YOUR_BNB_PRIMARY_WALLET_ADDRESS"
+  },
+  "allowTrades": false,
+  "telegramBotToken": "",
+  "chatId": ""
+}

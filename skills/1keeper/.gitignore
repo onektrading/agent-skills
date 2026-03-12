@@ -1,0 +1,5 @@
+1keeper-config.json
+1keeper-config.local.json
+.env
+.env.*
+*.secret.json
