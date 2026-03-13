@@ -1,6 +1,6 @@
 ---
 name: 1keeper
-description: Use this skill when the user asks to operate 1keeper Open API or Open WebSocket workflows, including ws signal delivery, token info lookup, buy/sell orders, quick TP/SL modes, conditional orders, copy-trading tasks, wallet balance, recent trades, wallet list, primary-wallet management, or asks to update the skill (e.g. "更新SKILL", "升级SKILL", "同步SKILL", "Update SKILL", "Upgrade SKILL", "Sync SKILL").
+description: Use this skill when the user asks to operate 1keeper Open API or Open WebSocket workflows, including ws signal delivery, token info lookup, buy/sell orders, quick TP/SL modes, order management, copy-trading tasks, wallet balance, recent trades, wallet list, primary-wallet management, or asks to update the skill (e.g. "更新SKILL", "升级SKILL", "同步SKILL", "Update SKILL", "Upgrade SKILL", "Sync SKILL").
 ---
 
 # 1keeper OpenClaw Skill
@@ -75,9 +75,9 @@ User-side requirement: only provide API Key to Agent; no manual config editing.
 5. Support interaction flows:
 - signal-triggered query/trade flow
 - user-triggered token query, buy, sell, balance query, recent trades query
-- buy-with-TP/SL flow: set TP/SL mode during buy -> buy confirm -> TP/SL confirm -> create conditional orders
-- buy-success quick TP/SL flow: `使用止盈止损` -> mode select -> confirm -> create conditional orders
-- conditional order flow: create/cancel/list/query
+- buy-with-TP/SL flow: set TP/SL mode during buy -> buy confirm -> TP/SL confirm -> create orders
+- buy-success quick TP/SL flow: `使用止盈止损` -> mode select -> confirm -> create orders
+- order flow: create/cancel/list/query
 - copy-trading flow: create/update/start/pause/stop/list/detail/trades
 - all buy/sell actions must require final confirmation
 6. Persist user settings, active chats, pending actions, and callback contexts in local JSON state.
@@ -95,7 +95,7 @@ User-side requirement: only provide API Key to Agent; no manual config editing.
 - `/api/open/wallet/primary` for set primary
 4. When wallet is in main-wallet mode, query operations should resolve current primary wallet before calling balance/trades.
 5. Keep callback payloads short and store full callback context in local JSON state.
-6. Conditional order endpoints:
+6. Order (挂单) endpoints:
 - `/api/open/cond/add`
 - `/api/open/cond/cancel`
 - `/api/open/cond/list`
@@ -112,17 +112,17 @@ User-side requirement: only provide API Key to Agent; no manual config editing.
 8. Quick TP/SL callback protocol:
 - `TPSL:<id>` open quick TP/SL from a completed buy
 - `TPSLMODE:<id>:DOUBLE|CONSERVATIVE|CUSTOM` choose mode
-- `TPSLCONFIRM:<id>` / `TPSLCANCEL:<id>` confirm or cancel conditional order creation
+- `TPSLCONFIRM:<id>` / `TPSLCANCEL:<id>` confirm or cancel order creation
 
-## Conditional order & copy-trade rules
+## Order (挂单) & copy-trade rules
 
-1. Conditional order `order_type`:
+1. Order `order_type`:
 - `1` take profit
 - `2` stop loss
 - `3` dip-buy
 - `4` dip-sell
 2. For `order_type <= 4`, `trigger_price` is required.
-3. Conditional/copy create or update operations are write actions:
+3. Order/copy create or update operations are write actions:
 - require explicit confirmation before execution
 - return user-readable error mapping on failure
 4. Copy-trading lifecycle actions:
@@ -132,7 +132,7 @@ User-side requirement: only provide API Key to Agent; no manual config editing.
 - pause (`/copy/pause`)
 - stop (`/copy/stop`)
 5. Query actions must support:
-- conditional order list/detail
+- order list/detail
 - copy task list/detail
 - copy trades history
 
@@ -168,6 +168,23 @@ User-side requirement: only provide API Key to Agent; no manual config editing.
 7. Execution mapping:
 - use `/api/open/cond/add` and split to multiple orders per selected mode
 - all quick-mode order creations must require final confirmation
+8. Order display (MC-first):
+- for order preview/list/detail, display trigger values as market cap (`MC`) instead of unit price
+- internal trigger calculation still uses token price formulas; display layer converts to MC
+- MC conversion: `triggerMC = triggerPrice × effectiveSupply` (USD)
+- `effectiveSupply` follows tokeninfo rule: if supply is `2,000,000,000`, use `1,000,000,000`
+- avoid showing `trigger_price` directly unless user explicitly asks for raw price
+9. Order display template:
+```text
+挂单信息
+模式: <DOUBLE|CONSERVATIVE|CUSTOM>
+链: <SOL|BNB>
+CA: <token_address>
+基准市值: <$number | N/A>
+条目:
+1) <止盈|止损> <+/-pct>% 触发市值=<$number | N/A> 卖出=<pct%>
+2) ...
+```
 
 ## Token info rendering rules
 
