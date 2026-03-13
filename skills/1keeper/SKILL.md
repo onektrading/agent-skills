@@ -186,6 +186,27 @@ CA: <token_address>
 2) ...
 ```
 
+## Trade detail rendering rules
+
+1. Amount fields must be unit-explicit:
+- do not output ambiguous amount values without unit tags
+- for buy/sell trade detail, prefer dual-unit format:
+  - `成交金额: <native_amount> <SOL|BNB>(<usd_amount> USD)`
+- never label USD value as SOL/BNB amount (avoid `0.8851 SOL` when it is USD)
+2. If only one unit is available:
+- native only: `成交金额(主链币): <amount> <SOL|BNB>`
+- USD only: `成交金额(USD): <amount> USD`
+3. Price field must label quote currency:
+- `成交价格: $<price>` means USD per token
+4. Recommended trade detail template:
+```text
+交易详情
+• Token: <symbol>
+• 成交数量: <token_amount> <symbol>
+• 成交金额: <native_amount> <SOL|BNB>(<usd_amount> USD)
+• 成交价格: $<price>
+```
+
 ## Token info rendering rules
 
 When rendering token info from `/api/open/tokeninfo`, use market-cap based output:
