@@ -1,6 +1,6 @@
 ---
 name: 1keeper
-description: Use this skill when the user asks to operate 1keeper Open API or Open WebSocket workflows, including ws signal delivery, token info lookup, buy/sell orders, wallet balance, recent trades, wallet list, primary-wallet management, or asks to update the skill (e.g. "更新SKILL", "升级SKILL", "同步SKILL", "Update SKILL", "Upgrade SKILL", "Sync SKILL").
+description: Use this skill when the user asks to operate 1keeper Open API or Open WebSocket workflows, including ws signal delivery, token info lookup, buy/sell orders, quick TP/SL modes, conditional orders, copy-trading tasks, wallet balance, recent trades, wallet list, primary-wallet management, or asks to update the skill (e.g. "更新SKILL", "升级SKILL", "同步SKILL", "Update SKILL", "Upgrade SKILL", "Sync SKILL").
 ---
 
 # 1keeper OpenClaw Skill
@@ -75,6 +75,10 @@ User-side requirement: only provide API Key to Agent; no manual config editing.
 5. Support interaction flows:
 - signal-triggered query/trade flow
 - user-triggered token query, buy, sell, balance query, recent trades query
+- buy-with-TP/SL flow: set TP/SL mode during buy -> buy confirm -> TP/SL confirm -> create conditional orders
+- buy-success quick TP/SL flow: `使用止盈止损` -> mode select -> confirm -> create conditional orders
+- conditional order flow: create/cancel/list/query
+- copy-trading flow: create/update/start/pause/stop/list/detail/trades
 - all buy/sell actions must require final confirmation
 6. Persist user settings, active chats, pending actions, and callback contexts in local JSON state.
 7. Respect trade safety gate:
@@ -91,6 +95,79 @@ User-side requirement: only provide API Key to Agent; no manual config editing.
 - `/api/open/wallet/primary` for set primary
 4. When wallet is in main-wallet mode, query operations should resolve current primary wallet before calling balance/trades.
 5. Keep callback payloads short and store full callback context in local JSON state.
+6. Conditional order endpoints:
+- `/api/open/cond/add`
+- `/api/open/cond/cancel`
+- `/api/open/cond/list`
+- `/api/open/cond/info`
+7. Copy-trading endpoints:
+- `/api/open/copy/add`
+- `/api/open/copy/update`
+- `/api/open/copy/stop`
+- `/api/open/copy/start`
+- `/api/open/copy/pause`
+- `/api/open/copy/list`
+- `/api/open/copy/info`
+- `/api/open/copy/trades`
+8. Quick TP/SL callback protocol:
+- `TPSL:<id>` open quick TP/SL from a completed buy
+- `TPSLMODE:<id>:DOUBLE|CONSERVATIVE|CUSTOM` choose mode
+- `TPSLCONFIRM:<id>` / `TPSLCANCEL:<id>` confirm or cancel conditional order creation
+
+## Conditional order & copy-trade rules
+
+1. Conditional order `order_type`:
+- `1` take profit
+- `2` stop loss
+- `3` dip-buy
+- `4` dip-sell
+2. For `order_type <= 4`, `trigger_price` is required.
+3. Conditional/copy create or update operations are write actions:
+- require explicit confirmation before execution
+- return user-readable error mapping on failure
+4. Copy-trading lifecycle actions:
+- create (`/copy/add`)
+- update (`/copy/update`)
+- start (`/copy/start`)
+- pause (`/copy/pause`)
+- stop (`/copy/stop`)
+5. Query actions must support:
+- conditional order list/detail
+- copy task list/detail
+- copy trades history
+
+## Quick TP/SL modes (tokeninfo pricing only)
+
+1. Trigger point:
+- during buy flow, user may choose to set TP/SL mode before final buy confirmation
+- after buy order success, show button: `使用止盈止损` for post-buy setup
+2. Entry behavior:
+- if user already set TP/SL during buy flow, carry the selected mode into post-buy creation flow
+- if user did not set TP/SL during buy flow, prompt post-buy quick setup by default
+3. Pricing baseline:
+- use `/api/open/tokeninfo` current price as `basePrice` snapshot
+- do not use `/api/open/trades` for TP/SL pricing baseline
+- if `tokeninfo.price` is missing/invalid, block creation and return clear error
+4. Trigger price formulas:
+- `tpPrice = basePrice * (1 + tpPct/100)`
+- `slPrice = basePrice * (1 - slPct/100)`
+5. Built-in quick modes:
+- `DOUBLE` (翻倍保本):
+  - TP1: `+100%`, sell `50%`
+  - TP2: `+300%`, sell remaining `50%`
+  - SL: `-50%`, sell `100%`
+- `CONSERVATIVE` (保守模式):
+  - TP: `+30%`, sell `100%`
+  - SL: `-30%`, sell `100%`
+- `CUSTOM` (自定义):
+  - user inputs TP/SL percentages
+  - TP sell `100%`, SL sell `100%`
+6. Custom input validation:
+- TP must be `> 0`
+- SL must be `> 0` and `< 100`
+7. Execution mapping:
+- use `/api/open/cond/add` and split to multiple orders per selected mode
+- all quick-mode order creations must require final confirmation
 
 ## Token info rendering rules
 

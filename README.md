@@ -44,10 +44,27 @@ Use natural language directly. Typical examples:
 - "Sell 50% of this CA"
 - "Sell all for this address"
 
-4. Query recent trades
+4. Use quick TP/SL after buy
+- "After buy, use quick TP/SL"
+- "Use DOUBLE mode (100%/300% TP with -50% SL)"
+- "Use CONSERVATIVE mode (30% TP/SL)"
+- "Use custom TP/SL and sell 100% on both"
+- "TP/SL pricing should use tokeninfo snapshot"
+
+5. Query recent trades
 - "Show recent trades"
 - "Show my last 10 trades"
 - "Query recent buy/sell records for this wallet"
+
+6. Create/manage conditional orders
+- "Create a take-profit order for this token"
+- "Cancel this conditional order"
+- "Show my active conditional orders"
+
+7. Create/manage copy-trading tasks
+- "Create a copy-trading task for this address"
+- "Pause this copy task"
+- "Show copy-trading task details and records"
 
 ## 3. Upgrade Skill
 

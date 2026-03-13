@@ -475,6 +475,543 @@
 
 ---
 
+## 9. 创建条件单
+
+**POST** `/api/open/cond/add`
+
+### 请求参数
+
+| 字段 | 类型 | 必填 | 说明 |
+|------|------|------|------|
+| `api_key` | string | 是 | API Key |
+| `chain_id` | int | 是 | 链 ID，`501`(Solana) / `56`(BSC) |
+| `order_type` | int | 是 | 挂单类型，1:止盈 2:止损 3:抄底买 4:抄底卖 |
+| `wallet_address` | string | 是 | 钱包地址 |
+| `input_token_address` | string | 是 | 输入代币地址 |
+| `output_token_address` | string | 是 | 输出代币地址 |
+| `side` | int | 是 | 方向，`1` 买入 `2` 卖出 |
+| `input_token_amount` | string | 是 | 输入代币数量 |
+| `trigger_price` | string | 否 | 触发价格（order_type ≤ 4 时必填） |
+
+> Preset 自动从用户交易配置中获取，无需传入。
+
+### 请求示例
+
+```json
+{
+  "api_key": "ak_xxxxxxxxxxxxxxxx",
+  "chain_id": 501,
+  "order_type": 1,
+  "wallet_address": "5ZWj...",
+  "input_token_address": "So11...",
+  "output_token_address": "EPjF...",
+  "side": 1,
+  "input_token_amount": "0.5",
+  "trigger_price": "0.001"
+}
+```
+
+### 响应
+
+```json
+{"code": 10000, "message": "ok"}
+```
+
+### 错误码
+
+| code | message | 说明 |
+|------|---------|------|
+| 213001 | Invalid Parameter | 参数错误 |
+| 213002 | api key not found | API Key 无效 |
+| 213003 | chain_id is invalid | chain_id 无效 |
+| 213004 | user not found | 用户不存在 |
+| 213005 | invalid order type | order_type 无效 |
+| 213006 | invalid input amount | input_token_amount 无效 |
+| 213007 | invalid trigger price | trigger_price 无效 |
+| 213009 | invalid side | side 无效 |
+| 213010 | (动态) | 创建失败 |
+
+---
+
+## 10. 取消条件单
+
+**POST** `/api/open/cond/cancel`
+
+### 请求参数
+
+| 字段 | 类型 | 必填 | 说明 |
+|------|------|------|------|
+| `api_key` | string | 是 | API Key |
+| `chain_id` | int | 是 | 链 ID |
+| `order_no` | []string | 是 | 条件单号列表 |
+| `wallet_address` | string | 否 | 钱包地址 |
+
+### 请求示例
+
+```json
+{
+  "api_key": "ak_xxxxxxxxxxxxxxxx",
+  "chain_id": 501,
+  "order_no": ["CO20260312001", "CO20260312002"]
+}
+```
+
+### 响应
+
+```json
+{"code": 10000, "message": "ok"}
+```
+
+### 错误码
+
+| code | message | 说明 |
+|------|---------|------|
+| 213101 | Invalid Parameter | 参数错误 |
+| 213102 | api key not found | API Key 无效 |
+| 213103 | chain_id is invalid | chain_id 无效 |
+| 213104 | cancel failed | 取消失败 |
+
+---
+
+## 11. 条件单列表
+
+**POST** `/api/open/cond/list`
+
+### 请求参数
+
+| 字段 | 类型 | 必填 | 说明 |
+|------|------|------|------|
+| `api_key` | string | 是 | API Key |
+| `chain_id` | int | 是 | 链 ID |
+| `wallet_address` | string | 否 | 筛选钱包地址 |
+| `token_address` | string | 否 | 筛选代币地址 |
+| `status` | int | 否 | 0:全部 1:进行中 2:成功 3:失败 4:取消 |
+| `side` | int | 否 | 0:全部 1:买入 2:卖出 |
+| `page` | int | 否 | 页码，默认 1 |
+| `page_size` | int | 否 | 每页条数，默认 10 |
+
+### 请求示例
+
+```json
+{
+  "api_key": "ak_xxxxxxxxxxxxxxxx",
+  "chain_id": 501,
+  "status": 1,
+  "page": 1,
+  "page_size": 10
+}
+```
+
+### 响应
+
+```json
+{
+  "code": 10000,
+  "message": "ok",
+  "data": {
+    "conditional_orders": [...],
+    "total": 5
+  }
+}
+```
+
+### 错误码
+
+| code | message | 说明 |
+|------|---------|------|
+| 213201 | Invalid Parameter | 参数错误 |
+| 213202 | api key not found | API Key 无效 |
+| 213203 | chain_id is invalid | chain_id 无效 |
+| 213204 | query failed | 查询失败 |
+| 213205 | server error | 服务端错误 |
+
+---
+
+## 12. 条件单详情
+
+**POST** `/api/open/cond/info`
+
+### 请求参数
+
+| 字段 | 类型 | 必填 | 说明 |
+|------|------|------|------|
+| `api_key` | string | 是 | API Key |
+| `chain_id` | int | 是 | 链 ID |
+| `order_no` | string | 是 | 条件单号 |
+
+### 请求示例
+
+```json
+{
+  "api_key": "ak_xxxxxxxxxxxxxxxx",
+  "chain_id": 501,
+  "order_no": "CO20260312001"
+}
+```
+
+### 响应
+
+```json
+{
+  "code": 10000,
+  "message": "ok",
+  "data": { ... }
+}
+```
+
+### 错误码
+
+| code | message | 说明 |
+|------|---------|------|
+| 213301 | Invalid Parameter | 参数错误 |
+| 213302 | api key not found | API Key 无效 |
+| 213303 | chain_id is invalid | chain_id 无效 |
+| 213304 | order not found | 订单不存在 |
+| 213305 | server error | 服务端错误 |
+
+---
+
+## 13. 创建跟单
+
+**POST** `/api/open/copy/add`
+
+### 请求参数
+
+| 字段 | 类型 | 必填 | 说明 |
+|------|------|------|------|
+| `api_key` | string | 是 | API Key |
+| `chain_id` | int | 是 | 链 ID |
+| `wallet_address` | string | 是 | 钱包地址 |
+| `copy_address` | string | 是 | 跟单目标地址 |
+| `enable_lightning` | int | 否 | 是否闪电模式，0:关 1:开 |
+| `buy_type` | int | 是 | 买入方式 |
+| `buy_amount` | string | 是 | 买入数量 |
+| `sell_type` | int | 是 | 卖出方式 |
+
+> Preset 自动从用户交易配置中获取，无需传入。
+
+### 请求示例
+
+```json
+{
+  "api_key": "ak_xxxxxxxxxxxxxxxx",
+  "chain_id": 501,
+  "wallet_address": "5ZWj...",
+  "copy_address": "8abc...",
+  "buy_type": 1,
+  "buy_amount": "0.1",
+  "sell_type": 1
+}
+```
+
+### 响应
+
+```json
+{"code": 10000, "message": "ok"}
+```
+
+### 错误码
+
+| code | message | 说明 |
+|------|---------|------|
+| 214001 | Invalid Parameter | 参数错误 |
+| 214002 | api key not found | API Key 无效 |
+| 214003 | (动态) | 创建失败 |
+
+---
+
+## 14. 更新跟单
+
+**POST** `/api/open/copy/update`
+
+### 请求参数
+
+| 字段 | 类型 | 必填 | 说明 |
+|------|------|------|------|
+| `api_key` | string | 是 | API Key |
+| `copy_id` | int64 | 是 | 跟单任务 ID |
+| `chain_id` | int | 是 | 链 ID |
+| `wallet_address` | string | 是 | 钱包地址 |
+| `copy_address` | string | 是 | 跟单目标地址 |
+| `enable_lightning` | int | 否 | 是否闪电模式 |
+| `buy_type` | int | 是 | 买入方式 |
+| `buy_amount` | string | 是 | 买入数量 |
+| `sell_type` | int | 是 | 卖出方式 |
+
+### 请求示例
+
+```json
+{
+  "api_key": "ak_xxxxxxxxxxxxxxxx",
+  "copy_id": 123,
+  "chain_id": 501,
+  "wallet_address": "5ZWj...",
+  "copy_address": "8abc...",
+  "buy_type": 1,
+  "buy_amount": "0.2",
+  "sell_type": 1
+}
+```
+
+### 响应
+
+```json
+{"code": 10000, "message": "ok"}
+```
+
+### 错误码
+
+| code | message | 说明 |
+|------|---------|------|
+| 214101 | Invalid Parameter | 参数错误 |
+| 214102 | api key not found | API Key 无效 |
+| 214103 | (动态) | 更新失败 |
+
+---
+
+## 15. 停止跟单
+
+**POST** `/api/open/copy/stop`
+
+### 请求参数
+
+| 字段 | 类型 | 必填 | 说明 |
+|------|------|------|------|
+| `api_key` | string | 是 | API Key |
+| `copy_id` | int64 | 是 | 跟单任务 ID |
+
+### 响应
+
+```json
+{"code": 10000, "message": "ok"}
+```
+
+### 错误码
+
+| code | message | 说明 |
+|------|---------|------|
+| 214201 | Invalid Parameter | 参数错误 |
+| 214202 | api key not found | API Key 无效 |
+| 214203 | (动态) | 停止失败 |
+
+---
+
+## 16. 启动跟单
+
+**POST** `/api/open/copy/start`
+
+### 请求参数
+
+| 字段 | 类型 | 必填 | 说明 |
+|------|------|------|------|
+| `api_key` | string | 是 | API Key |
+| `copy_id` | int64 | 是 | 跟单任务 ID |
+
+### 响应
+
+```json
+{"code": 10000, "message": "ok"}
+```
+
+### 错误码
+
+| code | message | 说明 |
+|------|---------|------|
+| 214301 | Invalid Parameter | 参数错误 |
+| 214302 | api key not found | API Key 无效 |
+| 214303 | (动态) | 启动失败 |
+
+---
+
+## 17. 暂停跟单
+
+**POST** `/api/open/copy/pause`
+
+### 请求参数
+
+| 字段 | 类型 | 必填 | 说明 |
+|------|------|------|------|
+| `api_key` | string | 是 | API Key |
+| `copy_id` | int64 | 是 | 跟单任务 ID |
+
+### 响应
+
+```json
+{"code": 10000, "message": "ok"}
+```
+
+### 错误码
+
+| code | message | 说明 |
+|------|---------|------|
+| 214401 | Invalid Parameter | 参数错误 |
+| 214402 | api key not found | API Key 无效 |
+| 214403 | (动态) | 暂停失败 |
+
+---
+
+## 18. 跟单列表
+
+**POST** `/api/open/copy/list`
+
+### 请求参数
+
+| 字段 | 类型 | 必填 | 说明 |
+|------|------|------|------|
+| `api_key` | string | 是 | API Key |
+| `chain_id` | int | 否 | 链 ID，不传返回全部链 |
+| `wallet_address` | string | 否 | 筛选钱包地址 |
+
+### 请求示例
+
+```json
+{
+  "api_key": "ak_xxxxxxxxxxxxxxxx",
+  "chain_id": 501
+}
+```
+
+### 响应
+
+```json
+{
+  "code": 10000,
+  "message": "ok",
+  "data": [
+    {
+      "id": 123,
+      "user_id": 1,
+      "chain_id": 501,
+      "wallet_address": "5ZWj...",
+      "wallet_name": "主钱包",
+      "copy_address": "8abc...",
+      "buy_type": 1,
+      "buy_amount": "0.1",
+      "sell_type": 1,
+      "status": 1,
+      "buy_count": 10,
+      "sell_count": 5,
+      "buy_total": "1.5",
+      "sell_total": "0.8",
+      "acc_pnl": "0.3",
+      "create_at": 1741608000,
+      "update_at": 1741608000,
+      "last_trade_at": 1741608000
+    }
+  ]
+}
+```
+
+### 错误码
+
+| code | message | 说明 |
+|------|---------|------|
+| 214501 | Invalid Parameter | 参数错误 |
+| 214502 | api key not found | API Key 无效 |
+| 214503 | query failed | 查询失败 |
+
+---
+
+## 19. 跟单详情
+
+**POST** `/api/open/copy/info`
+
+### 请求参数
+
+| 字段 | 类型 | 必填 | 说明 |
+|------|------|------|------|
+| `api_key` | string | 是 | API Key |
+| `chain_id` | int | 是 | 链 ID |
+| `copy_id` | int64 | 是 | 跟单任务 ID |
+
+### 响应
+
+```json
+{
+  "code": 10000,
+  "message": "ok",
+  "data": { ... }
+}
+```
+
+### 错误码
+
+| code | message | 说明 |
+|------|---------|------|
+| 214601 | Invalid Parameter | 参数错误 |
+| 214602 | api key not found | API Key 无效 |
+| 214603 | order not found | 任务不存在 |
+
+---
+
+## 20. 跟单交易记录
+
+**POST** `/api/open/copy/trades`
+
+### 请求参数
+
+| 字段 | 类型 | 必填 | 说明 |
+|------|------|------|------|
+| `api_key` | string | 是 | API Key |
+| `chain_id` | int | 是 | 链 ID |
+| `copy_id` | int64 | 是 | 跟单任务 ID |
+| `wallet_address` | string | 否 | 筛选钱包地址 |
+| `copy_wallet_address` | string | 否 | 筛选跟单目标地址 |
+| `token_address` | string | 否 | 筛选代币地址 |
+| `side` | int | 否 | 0:全部 1:买入 2:卖出 |
+| `status` | int | 否 | 状态筛选 |
+| `offset` | int | 否 | 偏移量，默认 0 |
+| `limit` | int | 否 | 条数，默认 10 |
+
+### 请求示例
+
+```json
+{
+  "api_key": "ak_xxxxxxxxxxxxxxxx",
+  "chain_id": 501,
+  "copy_id": 123,
+  "offset": 0,
+  "limit": 20
+}
+```
+
+### 响应
+
+```json
+{
+  "code": 10000,
+  "message": "ok",
+  "data": {
+    "orders": [...],
+    "orders_count": 50,
+    "total_realized_pnl": "0.5",
+    "total_realized_pnl_usd": "75.00",
+    "total_unrealized_pnl": "0.1",
+    "total_unrealized_pnl_usd": "15.00",
+    "total_pnl": "0.6",
+    "total_pnl_usd": "90.00",
+    "total_buy_count": 30,
+    "total_sell_count": 20,
+    "total_failed_count": 2,
+    "copy_address": "8abc...",
+    "copy_time": 1741608000
+  }
+}
+```
+
+### 错误码
+
+| code | message | 说明 |
+|------|---------|------|
+| 214701 | Invalid Parameter | 参数错误 |
+| 214702 | api key not found | API Key 无效 |
+| 214703 | (动态) | 查询订单失败 |
+| 214704 | (动态) | 查询订单数失败 |
+| 214705 | (动态) | 查询全部交易失败 |
+| 214706 | (动态) | 查询任务失败 |
+
+---
+
 ## 通用错误
 
 | code | message | 说明 |

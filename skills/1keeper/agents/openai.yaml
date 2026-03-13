@@ -1,7 +1,7 @@
 interface:
   display_name: "1keeper Trader Bot"
-  short_description: "Telegram + WS signal trading for 1keeper"
-  default_prompt: "Use $1keeper to build or update a Telegram bot that trades from 1keeper signals and Open API endpoints."
+  short_description: "Telegram + WS trading with quick TP/SL, conditional and copy modes"
+  default_prompt: "Use $1keeper to build or update Telegram + WS workflows for 1keeper, including buy/sell, quick TP/SL from tokeninfo price snapshots, conditional orders, and copy-trading operations."
 
 policy:
   allow_implicit_invocation: true

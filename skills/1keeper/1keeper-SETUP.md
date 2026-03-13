@@ -34,3 +34,7 @@
 1. `chainId` 必须是 `501`。
 2. 两条链主钱包地址都非空。
 3. 当前 skill 主钱包与 `wallets.solanaPrimaryWalletAddress` 一致。
+4. 快捷止盈止损可用性校验：
+- `/api/open/tokeninfo` 可返回有效 `price`。
+- 买入成功后可展示 `使用止盈止损` 按钮并进入模式选择。
+- 在任一模式下都必须先二次确认后再调用 `/api/open/cond/add`。

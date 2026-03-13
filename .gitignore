@@ -1,2 +1,8 @@
 .DS_Store
 *.zip
+1keeper-config.json
+1keeper-config.local.json
+.env
+.env.*
+*.secret.json
+.DS_Store
