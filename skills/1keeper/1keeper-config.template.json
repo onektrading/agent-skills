@@ -6,6 +6,16 @@
     "solanaPrimaryWalletAddress": "YOUR_SOLANA_PRIMARY_WALLET_ADDRESS",
     "bnbPrimaryWalletAddress": "YOUR_BNB_PRIMARY_WALLET_ADDRESS"
   },
+  "copyDefaults": {
+    "addressCopy": {
+      "sellOrdersCfg": "[{\"type\":1,\"take_profit_percent\":20,\"sell_percent\":100},{\"type\":2,\"stop_loss_percent\":10,\"sell_percent\":100}]",
+      "copyAdvCfg": "{\"liquidity\":{\"min\":3000},\"copy_amount\":{\"min\":0.001},\"token_age\":{\"max\":60},\"min_lp_burnt\":100,\"exclude_holding\":true,\"protocol_list\":[\"pumpfun\",\"bonk\",\"moonshot\",\"bags\",\"believe\",\"studio\",\"dbc\",\"launchlab\",\"moonit\"]}"
+    },
+    "signalCopy": {
+      "sellOrdersCfg": "[{\"type\":1,\"take_profit_percent\":20,\"sell_percent\":100},{\"type\":2,\"stop_loss_percent\":10,\"sell_percent\":100}]",
+      "copyAdvCfg": "{\"liquidity\":{\"min\":3000},\"copy_amount\":{\"min\":0.001},\"token_age\":{\"max\":60},\"min_lp_burnt\":100,\"exclude_holding\":true,\"protocol_list\":[\"pumpfun\",\"bonk\",\"moonshot\",\"bags\",\"believe\",\"studio\",\"dbc\",\"launchlab\",\"moonit\"]}"
+    }
+  },
   "allowTrades": false,
   "telegramBotToken": "",
   "chatId": ""

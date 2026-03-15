@@ -1012,6 +1012,257 @@
 
 ---
 
+## 21. 创建信号跟单
+
+**POST** `/api/open/signal/add`
+
+### 请求参数
+
+| 字段 | 类型 | 必填 | 说明 |
+|------|------|------|------|
+| `api_key` | string | 是 | API Key |
+| `chain_id` | int | 是 | 链 ID，`501`(Solana) 或 `56`(BSC) |
+| `wallet_address` | string | 是 | 钱包地址 |
+| `enable_lightning` | int | 否 | 是否闪电模式，0:关 1:开 |
+| `signal_period` | int64 | 否 | 信号周期（秒） |
+| `signal_count` | int | 否 | 信号次数 |
+| `buy_type` | int | 是 | 买入方式 |
+| `buy_amount` | string | 是 | 买入数量 |
+| `sell_type` | int | 是 | 卖出方式 |
+
+> Preset 自动从用户交易配置中获取，无需传入。
+
+### 请求示例
+
+```json
+{
+  "api_key": "ak_xxxxxxxxxxxxxxxx",
+  "chain_id": 501,
+  "wallet_address": "5ZWj...",
+  "signal_period": 3600,
+  "signal_count": 3,
+  "buy_type": 1,
+  "buy_amount": "0.1",
+  "sell_type": 1
+}
+```
+
+### 响应
+
+```json
+{"code": 10000, "message": "ok"}
+```
+
+### 错误码
+
+| code | message | 说明 |
+|------|---------|------|
+| 215001 | Invalid Parameter | 参数错误 |
+| 215002 | api key not found | API Key 无效 |
+| 215003 | (动态) | 创建失败 |
+
+---
+
+## 22. 更新信号跟单
+
+**POST** `/api/open/signal/update`
+
+### 请求参数
+
+| 字段 | 类型 | 必填 | 说明 |
+|------|------|------|------|
+| `api_key` | string | 是 | API Key |
+| `copy_id` | int64 | 是 | 信号跟单任务 ID |
+| `chain_id` | int | 是 | 链 ID |
+| `wallet_address` | string | 是 | 钱包地址 |
+| `enable_lightning` | int | 否 | 是否闪电模式 |
+| `signal_period` | int64 | 否 | 信号周期（秒） |
+| `signal_count` | int | 否 | 信号次数 |
+| `buy_type` | int | 是 | 买入方式 |
+| `buy_amount` | string | 是 | 买入数量 |
+| `sell_type` | int | 是 | 卖出方式 |
+
+### 请求示例
+
+```json
+{
+  "api_key": "ak_xxxxxxxxxxxxxxxx",
+  "copy_id": 123,
+  "chain_id": 501,
+  "wallet_address": "5ZWj...",
+  "signal_period": 7200,
+  "signal_count": 5,
+  "buy_type": 1,
+  "buy_amount": "0.2",
+  "sell_type": 1
+}
+```
+
+### 响应
+
+```json
+{"code": 10000, "message": "ok"}
+```
+
+### 错误码
+
+| code | message | 说明 |
+|------|---------|------|
+| 215101 | Invalid Parameter | 参数错误 |
+| 215102 | api key not found | API Key 无效 |
+| 215103 | (动态) | 更新失败 |
+
+---
+
+## 23. 停止信号跟单
+
+**POST** `/api/open/signal/stop`
+
+### 请求参数
+
+| 字段 | 类型 | 必填 | 说明 |
+|------|------|------|------|
+| `api_key` | string | 是 | API Key |
+| `copy_id` | int64 | 是 | 信号跟单任务 ID |
+
+### 请求示例
+
+```json
+{
+  "api_key": "ak_xxxxxxxxxxxxxxxx",
+  "copy_id": 123
+}
+```
+
+### 响应
+
+```json
+{"code": 10000, "message": "ok"}
+```
+
+### 错误码
+
+| code | message | 说明 |
+|------|---------|------|
+| 215201 | Invalid Parameter | 参数错误 |
+| 215202 | api key not found | API Key 无效 |
+| 215203 | (动态) | 停止失败 |
+
+---
+
+## 24. 启动信号跟单
+
+**POST** `/api/open/signal/start`
+
+### 请求参数
+
+| 字段 | 类型 | 必填 | 说明 |
+|------|------|------|------|
+| `api_key` | string | 是 | API Key |
+| `copy_id` | int64 | 是 | 信号跟单任务 ID |
+
+### 请求示例
+
+```json
+{
+  "api_key": "ak_xxxxxxxxxxxxxxxx",
+  "copy_id": 123
+}
+```
+
+### 响应
+
+```json
+{"code": 10000, "message": "ok"}
+```
+
+### 错误码
+
+| code | message | 说明 |
+|------|---------|------|
+| 215301 | Invalid Parameter | 参数错误 |
+| 215302 | api key not found | API Key 无效 |
+| 215303 | (动态) | 启动失败 |
+
+---
+
+## 25. 暂停信号跟单
+
+**POST** `/api/open/signal/pause`
+
+### 请求参数
+
+| 字段 | 类型 | 必填 | 说明 |
+|------|------|------|------|
+| `api_key` | string | 是 | API Key |
+| `copy_id` | int64 | 是 | 信号跟单任务 ID |
+
+### 请求示例
+
+```json
+{
+  "api_key": "ak_xxxxxxxxxxxxxxxx",
+  "copy_id": 123
+}
+```
+
+### 响应
+
+```json
+{"code": 10000, "message": "ok"}
+```
+
+### 错误码
+
+| code | message | 说明 |
+|------|---------|------|
+| 215401 | Invalid Parameter | 参数错误 |
+| 215402 | api key not found | API Key 无效 |
+| 215403 | (动态) | 暂停失败 |
+
+---
+
+## 26. 信号跟单列表
+
+**POST** `/api/open/signal/list`
+
+### 请求参数
+
+| 字段 | 类型 | 必填 | 说明 |
+|------|------|------|------|
+| `api_key` | string | 是 | API Key |
+| `chain_id` | int | 否 | 链 ID，不传返回全部链 |
+| `wallet_address` | string | 否 | 筛选钱包地址 |
+
+### 请求示例
+
+```json
+{
+  "api_key": "ak_xxxxxxxxxxxxxxxx",
+  "chain_id": 501
+}
+```
+
+### 响应
+
+```json
+{
+  "code": 10000,
+  "message": "ok",
+  "data": [...]
+}
+```
+
+### 错误码
+
+| code | message | 说明 |
+|------|---------|------|
+| 215501 | Invalid Parameter | 参数错误 |
+| 215502 | api key not found | API Key 无效 |
+| 215503 | (动态) | 查询失败 |
+
+---
+
 ## 通用错误
 
 | code | message | 说明 |
