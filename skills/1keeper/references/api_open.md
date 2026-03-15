@@ -1263,6 +1263,277 @@
 
 ---
 
+## 27. 创建多地址跟单
+
+**POST** `/api/open/mcopy/add`
+
+### 请求参数
+
+| 字段 | 类型 | 必填 | 说明 |
+|------|------|------|------|
+| `api_key` | string | 是 | API Key |
+| `chain_id` | int | 是 | 链 ID，`501`(Solana) 或 `56`(BSC) |
+| `wallet_address` | string | 是 | 钱包地址 |
+| `group_id` | int64 | 是 | 跟单分组 ID |
+| `enable_lightning` | int | 否 | 是否闪电模式，0:关 1:开 |
+| `buy_type` | int | 是 | 买入方式 |
+| `buy_amount` | string | 是 | 买入数量 |
+| `sell_type` | int | 是 | 卖出方式 |
+| `sell_orders_cfg` | string | 否 | 卖出配置 JSON 字符串 |
+| `copy_adv_cfg` | string | 否 | 高级配置 JSON 字符串 |
+
+> Preset 自动从用户交易配置中获取，无需传入。
+
+### 请求示例
+
+```json
+{
+  "api_key": "ak_xxxxxxxxxxxxxxxx",
+  "chain_id": 501,
+  "wallet_address": "5ZWj...",
+  "group_id": 10,
+  "buy_type": 1,
+  "buy_amount": "0.1",
+  "sell_type": 1
+}
+```
+
+### 响应
+
+```json
+{"code": 10000, "message": "ok"}
+```
+
+### 错误码
+
+| code | message | 说明 |
+|------|---------|------|
+| 216001 | Invalid Parameter | 参数错误 |
+| 216002 | api key not found | API Key 无效 |
+| 216003 | group not found | 分组不存在或不属于当前用户 |
+| 216004 | group has no addresses | 分组中无地址 |
+| 216005 | (动态) | 创建失败 |
+
+---
+
+## 28. 更新多地址跟单
+
+**POST** `/api/open/mcopy/update`
+
+### 请求参数
+
+| 字段 | 类型 | 必填 | 说明 |
+|------|------|------|------|
+| `api_key` | string | 是 | API Key |
+| `id` | int64 | 是 | 多地址跟单任务 ID |
+| `chain_id` | int | 是 | 链 ID |
+| `wallet_address` | string | 是 | 钱包地址 |
+| `enable_lightning` | int | 否 | 是否闪电模式 |
+| `buy_type` | int | 是 | 买入方式 |
+| `buy_amount` | string | 是 | 买入数量 |
+| `sell_type` | int | 是 | 卖出方式 |
+| `sell_orders_cfg` | string | 否 | 卖出配置 JSON 字符串 |
+| `copy_adv_cfg` | string | 否 | 高级配置 JSON 字符串 |
+
+### 请求示例
+
+```json
+{
+  "api_key": "ak_xxxxxxxxxxxxxxxx",
+  "id": 123,
+  "chain_id": 501,
+  "wallet_address": "5ZWj...",
+  "buy_type": 1,
+  "buy_amount": "0.2",
+  "sell_type": 1
+}
+```
+
+### 响应
+
+```json
+{"code": 10000, "message": "ok"}
+```
+
+### 错误码
+
+| code | message | 说明 |
+|------|---------|------|
+| 216101 | Invalid Parameter | 参数错误 |
+| 216102 | api key not found | API Key 无效 |
+| 216103 | (动态) | 更新失败 |
+
+---
+
+## 29. 暂停多地址跟单
+
+**POST** `/api/open/mcopy/pause`
+
+### 请求参数
+
+| 字段 | 类型 | 必填 | 说明 |
+|------|------|------|------|
+| `api_key` | string | 是 | API Key |
+| `id` | int64 | 是 | 多地址跟单任务 ID |
+
+### 请求示例
+
+```json
+{
+  "api_key": "ak_xxxxxxxxxxxxxxxx",
+  "id": 123
+}
+```
+
+### 响应
+
+```json
+{"code": 10000, "message": "ok"}
+```
+
+### 错误码
+
+| code | message | 说明 |
+|------|---------|------|
+| 216201 | Invalid Parameter | 参数错误 |
+| 216202 | api key not found | API Key 无效 |
+| 216203 | (动态) | 暂停失败 |
+
+---
+
+## 30. 启动多地址跟单
+
+**POST** `/api/open/mcopy/start`
+
+### 请求参数
+
+| 字段 | 类型 | 必填 | 说明 |
+|------|------|------|------|
+| `api_key` | string | 是 | API Key |
+| `id` | int64 | 是 | 多地址跟单任务 ID |
+
+### 请求示例
+
+```json
+{
+  "api_key": "ak_xxxxxxxxxxxxxxxx",
+  "id": 123
+}
+```
+
+### 响应
+
+```json
+{"code": 10000, "message": "ok"}
+```
+
+### 错误码
+
+| code | message | 说明 |
+|------|---------|------|
+| 216301 | Invalid Parameter | 参数错误 |
+| 216302 | api key not found | API Key 无效 |
+| 216303 | (动态) | 启动失败 |
+
+---
+
+## 31. 停止多地址跟单
+
+**POST** `/api/open/mcopy/stop`
+
+### 请求参数
+
+| 字段 | 类型 | 必填 | 说明 |
+|------|------|------|------|
+| `api_key` | string | 是 | API Key |
+| `id` | int64 | 是 | 多地址跟单任务 ID |
+
+### 请求示例
+
+```json
+{
+  "api_key": "ak_xxxxxxxxxxxxxxxx",
+  "id": 123
+}
+```
+
+### 响应
+
+```json
+{"code": 10000, "message": "ok"}
+```
+
+### 错误码
+
+| code | message | 说明 |
+|------|---------|------|
+| 216401 | Invalid Parameter | 参数错误 |
+| 216402 | api key not found | API Key 无效 |
+| 216403 | (动态) | 停止失败 |
+
+---
+
+## 32. 多地址跟单列表
+
+**POST** `/api/open/mcopy/list`
+
+### 请求参数
+
+| 字段 | 类型 | 必填 | 说明 |
+|------|------|------|------|
+| `api_key` | string | 是 | API Key |
+| `chain_id` | int | 否 | 链 ID，不传返回全部链 |
+
+### 请求示例
+
+```json
+{
+  "api_key": "ak_xxxxxxxxxxxxxxxx",
+  "chain_id": 501
+}
+```
+
+### 响应
+
+```json
+{
+  "code": 10000,
+  "message": "ok",
+  "data": [
+    {
+      "id": 123,
+      "user_id": 1,
+      "chain_id": 501,
+      "wallet_address": "5ZWj...",
+      "group_id": 10,
+      "buy_type": 1,
+      "buy_amount": "0.1",
+      "sell_type": 1,
+      "status": 1,
+      "buy_count": 10,
+      "sell_count": 5,
+      "buy_total": "1.5",
+      "sell_total": "0.8",
+      "acc_pnl": "0.3",
+      "acc_pnl_usd": "45.00",
+      "last_trade_at": "2026-03-15T10:00:00Z",
+      "create_at": "2026-03-01T00:00:00Z",
+      "update_at": "2026-03-15T10:00:00Z"
+    }
+  ]
+}
+```
+
+### 错误码
+
+| code | message | 说明 |
+|------|---------|------|
+| 216501 | Invalid Parameter | 参数错误 |
+| 216502 | api key not found | API Key 无效 |
+| 216503 | query failed | 查询失败 |
+
+---
+
 ## 通用错误
 
 | code | message | 说明 |
